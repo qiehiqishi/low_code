@@ -2,6 +2,14 @@
 import { computed } from 'vue'
 import { useEditorStore } from '@/store/editor'
 import type { MaterialComponent } from '@/types/editor'
+import {
+  SwitchButton,
+  EditPen,
+  Box,
+  Postcard,
+  Document,
+  Folder,
+} from '@element-plus/icons-vue'
 
 const editorStore = useEditorStore()
 
@@ -18,9 +26,23 @@ const materialsByCategory = computed(() => {
   return grouped
 })
 
+const getIconComponent = (icon: string) => {
+  const iconMap: Record<string, any> = {
+    button: SwitchButton,
+    input: EditPen,
+    container: Box,
+    card: Postcard,
+    form: Document,
+  }
+  return iconMap[icon] || Box
+}
+
 const handleDragStart = (event: DragEvent, material: MaterialComponent) => {
   if (event.dataTransfer) {
-    event.dataTransfer.setData('application/json', JSON.stringify(material))
+    event.dataTransfer.setData('application/json', JSON.stringify({
+      type: 'material',
+      data: material,
+    }))
     event.dataTransfer.effectAllowed = 'copy'
     console.log('开始拖拽物料:', material.label)
   }
@@ -47,7 +69,9 @@ const handleDragEnd = () => {
         class="material-category"
       >
         <div class="material-category__title">
-          <span class="material-category__icon">📁</span>
+          <el-icon class="material-category__icon">
+            <Folder />
+          </el-icon>
           <span class="material-category__text">{{ category }}</span>
         </div>
 
@@ -61,12 +85,9 @@ const handleDragEnd = () => {
             @dragend="handleDragEnd"
           >
             <div class="material-item__icon">
-              <span v-if="material.icon === 'button'">🔘</span>
-              <span v-else-if="material.icon === 'input'">📝</span>
-              <span v-else-if="material.icon === 'container'">📦</span>
-              <span v-else-if="material.icon === 'card'">🃏</span>
-              <span v-else-if="material.icon === 'form'">📋</span>
-              <span v-else>🧩</span>
+              <el-icon :size="28">
+                <component :is="getIconComponent(material.icon || '')" />
+              </el-icon>
             </div>
             
             <div class="material-item__label">
@@ -173,7 +194,6 @@ const handleDragEnd = () => {
 }
 
 .material-item__icon {
-  font-size: 28px;
   color: #409eff;
   display: flex;
   align-items: center;

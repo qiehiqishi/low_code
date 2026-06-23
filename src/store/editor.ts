@@ -43,12 +43,14 @@ export const useEditorStore = defineStore('editor', () => {
       defaultProps: {
         type: 'primary',
         size: 'default',
+        text: '按钮',
       },
       defaultStyles: {
         width: 'auto',
         height: 'auto',
       },
       schema: [
+        { name: 'text', label: '按钮文字', type: 'string', default: '按钮' },
         { name: 'type', label: '类型', type: 'select', default: 'primary', options: [
           { label: '主要', value: 'primary' },
           { label: '成功', value: 'success' },
@@ -438,6 +440,110 @@ export const useEditorStore = defineStore('editor', () => {
   }
 
   /**
+   * 移动组件到新位置（调整兄弟层级）
+   * @param componentId 要移动的组件ID
+   * @param targetParentId 目标父组件ID
+   * @param targetIndex 目标位置索引
+   */
+  const moveComponent = (componentId: string, targetParentId: string, targetIndex: number) => {
+    if (componentId === 'root') {
+      console.error('不能移动根组件')
+      return
+    }
+
+    const component = findComponentById(componentId)
+    if (!component) {
+      console.error(`组件 ${componentId} 不存在`)
+      return
+    }
+
+    const sourceParent = findParentComponentById(componentId)
+    if (!sourceParent) {
+      console.error(`找不到组件 ${componentId} 的父组件`)
+      return
+    }
+
+    const targetParent = findComponentById(targetParentId)
+    if (!targetParent) {
+      console.error(`目标父组件 ${targetParentId} 不存在`)
+      return
+    }
+
+    if (!targetParent.isContainer) {
+      console.error(`组件 ${targetParentId} 不是容器`)
+      return
+    }
+
+    if (sourceParent.children) {
+      sourceParent.children = sourceParent.children.filter(child => child.id !== componentId)
+    }
+
+    component.parentId = targetParentId
+
+    if (!targetParent.children) {
+      targetParent.children = []
+    }
+
+    const finalIndex = Math.max(0, Math.min(targetIndex, targetParent.children.length))
+    targetParent.children.splice(finalIndex, 0, component)
+
+    saveHistory()
+  }
+
+  /**
+   * 调整组件在兄弟中的顺序（上移）
+   * @param componentId 组件ID
+   */
+  const moveComponentUp = (componentId: string) => {
+    const parent = findParentComponentById(componentId)
+    if (!parent || !parent.children) return
+
+    const index = parent.children.findIndex(child => child.id === componentId)
+    if (index > 0) {
+      const temp = parent.children[index]
+      parent.children[index] = parent.children[index - 1]
+      parent.children[index - 1] = temp
+      saveHistory()
+    }
+  }
+
+  /**
+   * 调整组件在兄弟中的顺序（下移）
+   * @param componentId 组件ID
+   */
+  const moveComponentDown = (componentId: string) => {
+    const parent = findParentComponentById(componentId)
+    if (!parent || !parent.children) return
+
+    const index = parent.children.findIndex(child => child.id === componentId)
+    if (index < parent.children.length - 1) {
+      const temp = parent.children[index]
+      parent.children[index] = parent.children[index + 1]
+      parent.children[index + 1] = temp
+      saveHistory()
+    }
+  }
+
+  /**
+   * 调整组件大小
+   * @param id 组件ID
+   * @param width 新宽度
+   * @param height 新高度
+   */
+  const adjustComponentSize = (id: string, width: string, height: string) => {
+    const component = findComponentById(id)
+    if (!component) {
+      console.error(`组件 ${id} 不存在`)
+      return
+    }
+
+    component.styles.width = width
+    component.styles.height = height
+
+    saveHistory()
+  }
+
+  /**
    * 保存历史记录（用于撤销/重做）
    */
   const saveHistory = () => {
@@ -527,6 +633,10 @@ export const useEditorStore = defineStore('editor', () => {
     hoverComponent,
     lockComponent,
     unlockComponent,
+    moveComponent,
+    moveComponentUp,
+    moveComponentDown,
+    adjustComponentSize,
     undo,
     redo,
 

@@ -4,8 +4,11 @@ import { useEditorStore } from '@/store/editor'
 import ComponentRenderer from '../core/ComponentRenderer.vue'
 import type { ComponentData, MaterialComponent } from '@/types/editor'
 import { createComponentFromMaterial } from '@/utils/componentUtils'
+import { Box, Refresh, FullScreen } from '@element-plus/icons-vue'
 
 const editorStore = useEditorStore()
+
+const isDragging = ref(false)
 
 onMounted(() => {
   if (editorStore.components.length === 0) {
@@ -23,23 +26,42 @@ const rootChildren = computed(() => {
 
 const isDragOver = ref(false)
 
+const handleDragEnter = (event: DragEvent) => {
+  event.preventDefault()
+  isDragOver.value = true
+  isDragging.value = true
+}
+
 const handleDragOver = (event: DragEvent) => {
   event.preventDefault()
   isDragOver.value = true
 }
 
-const handleDragLeave = () => {
-  isDragOver.value = false
+const handleDragLeave = (event: DragEvent) => {
+  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  const x = event.clientX
+  const y = event.clientY
+  
+  if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
+    isDragOver.value = false
+    isDragging.value = false
+    editorStore.hoverComponent(null)
+  }
 }
 
 const handleDrop = (event: DragEvent) => {
   event.preventDefault()
   isDragOver.value = false
+  isDragging.value = false
 
   try {
-    const materialData = event.dataTransfer?.getData('application/json')
-    if (materialData) {
-      const material: MaterialComponent = JSON.parse(materialData)
+    const data = event.dataTransfer?.getData('application/json')
+    if (!data) return
+
+    const parsed = JSON.parse(data)
+
+    if (parsed.type === 'material') {
+      const material: MaterialComponent = parsed.data
       console.log('接收到拖拽的物料:', material)
 
       const component = createComponentFromMaterial(material)
@@ -59,6 +81,30 @@ const handleDrop = (event: DragEvent) => {
         editorStore.addComponent(component, targetParentId)
         editorStore.selectComponent(component)
         console.log('组件添加成功')
+      }
+    } else if (parsed.type === 'component') {
+      const sourceComponentId = parsed.componentId
+      const sourceComponent = editorStore.findComponentById(sourceComponentId)
+      
+      if (sourceComponent && rootComponent.value) {
+        let targetParentId = 'root'
+        
+        const hoveredComponent = editorStore.hoveredComponent
+        if (hoveredComponent && hoveredComponent.isContainer && hoveredComponent.id !== sourceComponentId) {
+          targetParentId = hoveredComponent.id
+          console.log('将组件移动到容器:', hoveredComponent.label || hoveredComponent.id)
+        } else {
+          console.log('将组件移动到根容器')
+        }
+        
+        const targetParent = editorStore.findComponentById(targetParentId)
+        
+        if (targetParent?.children) {
+          const targetIndex = targetParent.children.length
+          editorStore.moveComponent(sourceComponentId, targetParentId, targetIndex)
+          editorStore.selectComponent(sourceComponent)
+          console.log('组件移动成功:', sourceComponent.label || sourceComponent.id, '->', targetParentId)
+        }
       }
     }
   } catch (error) {
@@ -93,27 +139,37 @@ const handleHover = (id: string | null) => {
     </div>
 
     <div class="canvas__content">
-      <div
-        class="canvas__draggable"
+      <div class="canvas__draggable"
         :class="{ 'canvas__draggable--drag-over': isDragOver }"
+        @dragenter="handleDragEnter"
         @dragover="handleDragOver"
         @dragleave="handleDragLeave"
         @drop="handleDrop"
       >
         <div v-if="rootChildren.length === 0" class="canvas__empty">
-          <div class="canvas__empty-icon">📦</div>
+          <el-icon class="canvas__empty-icon" :size="64">
+            <Box />
+          </el-icon>
           <p class="canvas__empty-title">画布为空</p>
           <p class="canvas__empty-text">
             从左侧物料库拖拽组件到此处开始设计页面
           </p>
           <div class="canvas__empty-tips">
             <div class="canvas__empty-tip">
-              <span class="canvas__empty-tip-icon">💡</span>
+              <el-icon><Refresh /></el-icon>
               <span>支持拖拽添加组件</span>
             </div>
             <div class="canvas__empty-tip">
-              <span class="canvas__empty-tip-icon">💡</span>
+              <el-icon><Refresh /></el-icon>
               <span>容器组件可嵌套子组件</span>
+            </div>
+            <div class="canvas__empty-tip">
+              <el-icon><FullScreen /></el-icon>
+              <span>组件可拖拽排序和移动</span>
+            </div>
+            <div class="canvas__empty-tip">
+              <el-icon><FullScreen /></el-icon>
+              <span>选中组件后可拖拽边缘调整大小</span>
             </div>
           </div>
         </div>
@@ -220,7 +276,6 @@ const handleHover = (id: string | null) => {
 }
 
 .canvas__empty-icon {
-  font-size: 48px;
   color: #c0c4cc;
   margin-bottom: 16px;
 }
