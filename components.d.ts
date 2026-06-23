@@ -7,12 +7,17 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AlertContent: typeof import('./src/components/core/AlertContent.vue')['default']
     AttrPanel: typeof import('./src/components/editor/AttrPanel.vue')['default']
+    BreadcrumbContent: typeof import('./src/components/core/BreadcrumbContent.vue')['default']
     Canvas: typeof import('./src/components/editor/Canvas.vue')['default']
+    ChildrenContent: typeof import('./src/components/core/ChildrenContent.vue')['default']
     CodePreviewDialog: typeof import('./src/components/editor/CodePreviewDialog.vue')['default']
+    ComponentContent: typeof import('./src/components/core/ComponentContent.vue')['default']
     ComponentRenderer: typeof import('./src/components/core/ComponentRenderer.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
+    ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -23,9 +28,17 @@ declare module 'vue' {
     ElRadioButton: typeof import('element-plus/es')['ElRadioButton']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElSlider: typeof import('element-plus/es')['ElSlider']
+    ElStep: typeof import('element-plus/es')['ElStep']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTabPane: typeof import('element-plus/es')['ElTabPane']
     MaterialPanel: typeof import('./src/components/editor/MaterialPanel.vue')['default']
     PropsPanel: typeof import('./src/components/editor/PropsPanel.vue')['default']
     Renderer: typeof import('./src/components/core/Renderer.vue')['default']
+    SelectContent: typeof import('./src/components/core/SelectContent.vue')['default']
+    StepsContent: typeof import('./src/components/core/StepsContent.vue')['default']
+    TableContent: typeof import('./src/components/core/TableContent.vue')['default']
+    TabsContent: typeof import('./src/components/core/TabsContent.vue')['default']
   }
 }

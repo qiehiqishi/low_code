@@ -114,6 +114,27 @@ const handleDelete = () => {
               @update:model-value="handlePropChange(schema.name, $event)"
               size="small"
             />
+
+            <!-- 文本域类型 -->
+            <el-input
+              v-else-if="schema.type === 'textarea'"
+              type="textarea"
+              :model-value="selectedComponent.props[schema.name]"
+              @update:model-value="handlePropChange(schema.name, $event)"
+              :placeholder="`请输入${schema.label}`"
+              :rows="3"
+              size="small"
+            />
+
+            <!-- 滑块类型 -->
+            <el-slider
+              v-else-if="schema.type === 'slider'"
+              :model-value="selectedComponent.props[schema.name]"
+              @update:model-value="handlePropChange(schema.name, $event)"
+              :min="schema.min || 0"
+              :max="schema.max || 100"
+              :step="schema.step || 1"
+            />
           </div>
         </div>
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useEditorStore } from '@/store/editor';
 import type { ComponentData, MaterialComponent } from '@/types/editor';
-import { ElButton, ElInput, ElCard, ElForm, ElFormItem } from 'element-plus';
 import { ArrowUp, ArrowDown } from '@element-plus/icons-vue';
 import { createComponentFromMaterial } from '@/utils/componentUtils';
+import { componentRegistry, registerElementPlusComponents } from './componentRegistry';
+import ComponentContent from './ComponentContent.vue';
 interface Props {
  component: ComponentData;
  mode?: 'design' | 'preview';
@@ -29,17 +30,13 @@ const startY = ref(0);
 const startWidth = ref(0);
 const startHeight = ref(0);
 const isDragging = ref(false);
-const elementPlusComponents: Record<string, any> = {
- 'el-button': ElButton,
- 'el-input': ElInput,
- 'el-card': ElCard,
- 'el-form': ElForm,
- 'el-form-item': ElFormItem,
-};
+onMounted(() => {
+ registerElementPlusComponents();
+});
 const dynamicComponent = computed(() => {
  const componentName = props.component.componentName;
  if (componentName.startsWith('el-')) {
- const component = elementPlusComponents[componentName];
+ const component = componentRegistry.get(componentName);
  if (component) {
  return component;
  }
@@ -51,15 +48,35 @@ const dynamicComponent = computed(() => {
  return null;
 });
 const componentAttrs = computed(() => {
- return {
- ...props.component.props,
- style: props.component.styles,
- };
+  const attrs: Record<string, any> = {
+    ...props.component.props,
+    style: props.component.styles,
+  };
+  
+  if (props.component.events) {
+    for (const [eventName, handler] of Object.entries(props.component.events)) {
+      if (handler) {
+        attrs[`on${eventName.charAt(0).toUpperCase() + eventName.slice(1)}`] = () => {
+          try {
+            eval(handler);
+          } catch (e) {
+            console.error('执行事件处理失败:', e);
+          }
+        };
+      }
+    }
+  }
+  
+  return attrs;
 });
+const containerComponents = [
+ 'div', 'span', 'el-card', 'el-form', 'el-row', 
+ 'el-space', 'el-container', 'el-header', 'el-main', 
+ 'el-aside', 'el-footer', 'el-tabs', 'el-table', 'el-tree'
+];
 const isContainer = computed(() => {
  return props.component.isContainer ||
- props.component.componentName === 'div' ||
- props.component.componentName === 'el-card';
+ containerComponents.includes(props.component.componentName);
 });
 const hasChildren = computed(() => {
  return props.component.children && props.component.children.length > 0;
@@ -282,23 +299,15 @@ const handleChildHover = (id: string | null) => {
       v-bind="componentAttrs"
       class="component-renderer"
     >
-      <template v-if="hasChildren">
-        <ComponentRenderer
-          v-for="child in component.children"
-          :key="child.id"
-          :component="child"
-          :mode="mode"
-          @select="handleChildSelect"
-          @hover="handleChildHover"
-        />
-      </template>
-      
-      <template v-else-if="component.componentName === 'el-button'">
-        {{ component.props.text || '按钮' }}
-      </template>
+      <ComponentContent
+        :component="component"
+        :mode="mode"
+        @select="handleChildSelect"
+        @hover="handleChildHover"
+      />
       
       <div 
-        v-if="isContainer && !hasChildren"
+        v-if="isContainer && !hasChildren && !['el-alert', 'el-select', 'el-tabs', 'el-steps', 'el-table', 'el-breadcrumb'].includes(component.componentName)"
         class="component-renderer__empty"
       >
         <span class="component-renderer__empty-text">

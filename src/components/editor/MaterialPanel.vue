@@ -3,12 +3,26 @@ import { computed } from 'vue'
 import { useEditorStore } from '@/store/editor'
 import type { MaterialComponent } from '@/types/editor'
 import {
-  SwitchButton,
+  Switch,
   EditPen,
   Box,
   Postcard,
   Document,
   Folder,
+  Select,
+  Check,
+  CircleCheck,
+  Timer,
+  Calendar,
+  Star,
+  Grid,
+  CopyDocument,
+  AlarmClock,
+  PriceTag,
+  Bell,
+  ArrowRight,
+  List,
+  FolderOpened,
 } from '@element-plus/icons-vue'
 
 const editorStore = useEditorStore()
@@ -28,11 +42,32 @@ const materialsByCategory = computed(() => {
 
 const getIconComponent = (icon: string) => {
   const iconMap: Record<string, any> = {
-    button: SwitchButton,
+    button: Switch,
     input: EditPen,
     container: Box,
     card: Postcard,
     form: Document,
+    select: Select,
+    checkbox: Check,
+    radio: CircleCheck,
+    switch: Switch,
+    date: Calendar,
+    time: Timer,
+    rate: Star,
+    row: Grid,
+    col: Grid,
+    space: CopyDocument,
+    text: EditPen,
+    divider: AlarmClock,
+    alert: AlarmClock,
+    tag: PriceTag,
+    badge: Bell,
+    tabs: ArrowRight,
+    steps: List,
+    table: Grid,
+    tree: FolderOpened,
+    pagination: ArrowRight,
+    breadcrumb: ArrowRight,
   }
   return iconMap[icon] || Box
 }

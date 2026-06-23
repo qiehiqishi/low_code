@@ -75,6 +75,19 @@ const getStyleValue = (schema: PropSchema): any => {
   
   return selectedComponent.value.styles[schema.name] ?? schema.default
 }
+
+/**
+ * 处理事件更新
+ */
+const handleEventChange = (eventName: string, value: string) => {
+  if (!selectedComponent.value) return
+  
+  console.log('更新事件:', eventName, value)
+  
+  editorStore.updateComponentEvents(selectedComponent.value.id, {
+    [eventName]: value,
+  })
+}
 </script>
 
 <template>
@@ -211,6 +224,45 @@ const getStyleValue = (schema: PropSchema): any => {
                 {{ schema.description }}
               </p>
             </div>
+
+            <!-- Textarea 类型 -->
+            <div v-for="schema in propSchema.filter(s => s.type === 'textarea')" :key="schema.name" class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                {{ schema.label }}
+                <span v-if="schema.required" class="text-red-500 ml-1">*</span>
+              </label>
+              <el-input
+                type="textarea"
+                :model-value="getPropValue(schema)"
+                @update:model-value="(val) => handlePropChange(schema.name, val)"
+                :placeholder="'请输入' + schema.label"
+                :rows="schema.rows || 3"
+                size="small"
+                class="w-full"
+              />
+              <p v-if="schema.description" class="attr-panel__desc text-xs text-gray-500 mt-1">
+                {{ schema.description }}
+              </p>
+            </div>
+
+            <!-- Slider 类型 -->
+            <div v-for="schema in propSchema.filter(s => s.type === 'slider')" :key="schema.name" class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                {{ schema.label }}
+                <span v-if="schema.required" class="text-red-500 ml-1">*</span>
+              </label>
+              <el-slider
+                :model-value="getPropValue(schema)"
+                @update:model-value="(val) => handlePropChange(schema.name, val)"
+                :min="schema.min || 0"
+                :max="schema.max || 100"
+                :step="schema.step || 1"
+                :show-input="true"
+              />
+              <p v-if="schema.description" class="attr-panel__desc text-xs text-gray-500 mt-1">
+                {{ schema.description }}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -311,6 +363,95 @@ const getStyleValue = (schema: PropSchema): any => {
                 {{ schema.description }}
               </p>
             </div>
+
+            <!-- Textarea 类型 -->
+            <div v-for="schema in styleSchema.filter(s => s.type === 'textarea')" :key="schema.name" class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                {{ schema.label }}
+              </label>
+              <el-input
+                type="textarea"
+                :model-value="getStyleValue(schema)"
+                @update:model-value="(val) => handleStyleChange(schema.name, val)"
+                :placeholder="'请输入' + schema.label"
+                :rows="schema.rows || 3"
+                size="small"
+                class="w-full"
+              />
+              <p v-if="schema.description" class="attr-panel__desc text-xs text-gray-500 mt-1">
+                {{ schema.description }}
+              </p>
+            </div>
+
+            <!-- Slider 类型 -->
+            <div v-for="schema in styleSchema.filter(s => s.type === 'slider')" :key="schema.name" class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                {{ schema.label }}
+              </label>
+              <el-slider
+                :model-value="getStyleValue(schema)"
+                @update:model-value="(val) => handleStyleChange(schema.name, val)"
+                :min="schema.min || 0"
+                :max="schema.max || 100"
+                :step="schema.step || 1"
+                :show-input="true"
+              />
+              <p v-if="schema.description" class="attr-panel__desc text-xs text-gray-500 mt-1">
+                {{ schema.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 事件配置 -->
+        <div class="attr-panel__events mb-6">
+          <div class="attr-panel__section-title text-sm font-semibold text-gray-700 mb-3 pb-2 border-b border-gray-200">
+            事件配置
+          </div>
+          
+          <div class="attr-panel__form space-y-4">
+            <div class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                点击事件 (click)
+              </label>
+              <el-input
+                type="textarea"
+                :model-value="selectedComponent?.events?.click || ''"
+                @update:model-value="(val) => handleEventChange('click', val)"
+                placeholder="输入点击事件处理逻辑，如: alert('点击了')"
+                :rows="3"
+                size="small"
+                class="w-full"
+              />
+            </div>
+            <div class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                输入事件 (input)
+              </label>
+              <el-input
+                type="textarea"
+                :model-value="selectedComponent?.events?.input || ''"
+                @update:model-value="(val) => handleEventChange('input', val)"
+                placeholder="输入输入事件处理逻辑"
+                :rows="3"
+                size="small"
+                class="w-full"
+              />
+            </div>
+            <div class="attr-panel__field">
+              <label class="attr-panel__label block text-sm font-medium text-gray-700 mb-2">
+                变化事件 (change)
+              </label>
+              <el-input
+                type="textarea"
+                :model-value="selectedComponent?.events?.change || ''"
+                @update:model-value="(val) => handleEventChange('change', val)"
+                placeholder="输入变化事件处理逻辑"
+                :rows="3"
+                size="small"
+                class="w-full"
+              />
+            </div>
           </div>
         </div>
 
@@ -324,6 +465,9 @@ const getStyleValue = (schema: PropSchema): any => {
     <!-- 底部操作区 -->
     <div v-if="selectedComponent" class="attr-panel__footer px-4 py-3 border-t border-gray-200 bg-gray-50">
       <div class="flex gap-2">
+        <el-button size="small" type="primary" plain @click="editorStore.cloneComponent(selectedComponent.id)">
+          克隆组件
+        </el-button>
         <el-button size="small" type="danger" plain @click="editorStore.deleteComponent(selectedComponent.id)">
           删除组件
         </el-button>

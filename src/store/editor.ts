@@ -185,6 +185,529 @@ export const useEditorStore = defineStore('editor', () => {
       ],
       isContainer: true,
     },
+    {
+      type: 'el-select',
+      label: '选择器',
+      icon: 'select',
+      category: '表单组件',
+      defaultProps: {
+        placeholder: '请选择',
+        size: 'default',
+      },
+      defaultStyles: {
+        width: '100%',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'placeholder', label: '占位文本', type: 'string', default: '请选择' },
+        { name: 'size', label: '尺寸', type: 'select', default: 'default', options: [
+          { label: '大', value: 'large' },
+          { label: '默认', value: 'default' },
+          { label: '小', value: 'small' },
+        ]},
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+        { name: 'clearable', label: '可清空', type: 'boolean', default: false },
+        { name: 'multiple', label: '多选', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+        { name: 'height', label: '高度', type: 'string', default: 'auto' },
+      ],
+    },
+    {
+      type: 'el-checkbox',
+      label: '复选框',
+      icon: 'checkbox',
+      category: '表单组件',
+      defaultProps: {
+        label: '选项',
+      },
+      defaultStyles: {
+        width: 'auto',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'label', label: '标签文字', type: 'string', default: '选项' },
+        { name: 'checked', label: '是否选中', type: 'boolean', default: false },
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '0 8px 0 0' },
+      ],
+    },
+    {
+      type: 'el-radio',
+      label: '单选框',
+      icon: 'radio',
+      category: '表单组件',
+      defaultProps: {
+        label: '选项',
+      },
+      defaultStyles: {
+        width: 'auto',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'label', label: '标签文字', type: 'string', default: '选项' },
+        { name: 'value', label: '值', type: 'string', default: '' },
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '0 8px 0 0' },
+      ],
+    },
+    {
+      type: 'el-switch',
+      label: '开关',
+      icon: 'switch',
+      category: '表单组件',
+      defaultProps: {
+        modelValue: false,
+      },
+      defaultStyles: {
+        width: 'auto',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'modelValue', label: '是否开启', type: 'boolean', default: false },
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+        { name: 'activeText', label: '开启文字', type: 'string', default: '' },
+        { name: 'inactiveText', label: '关闭文字', type: 'string', default: '' },
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '0' },
+      ],
+    },
+    {
+      type: 'el-date-picker',
+      label: '日期选择器',
+      icon: 'date',
+      category: '表单组件',
+      defaultProps: {
+        type: 'date',
+        placeholder: '选择日期',
+      },
+      defaultStyles: {
+        width: '100%',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'type', label: '类型', type: 'select', default: 'date', options: [
+          { label: '日期', value: 'date' },
+          { label: '日期时间', value: 'datetime' },
+          { label: '年', value: 'year' },
+          { label: '月', value: 'month' },
+          { label: '周', value: 'week' },
+        ]},
+        { name: 'placeholder', label: '占位文本', type: 'string', default: '选择日期' },
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+        { name: 'clearable', label: '可清空', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+      ],
+    },
+    {
+      type: 'el-time-picker',
+      label: '时间选择器',
+      icon: 'time',
+      category: '表单组件',
+      defaultProps: {
+        placeholder: '选择时间',
+      },
+      defaultStyles: {
+        width: '100%',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'placeholder', label: '占位文本', type: 'string', default: '选择时间' },
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+        { name: 'clearable', label: '可清空', type: 'boolean', default: false },
+        { name: 'isRange', label: '时间范围', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+      ],
+    },
+    {
+      type: 'el-rate',
+      label: '评分',
+      icon: 'rate',
+      category: '表单组件',
+      defaultProps: {
+        modelValue: 0,
+        max: 5,
+      },
+      defaultStyles: {
+        width: 'auto',
+        height: 'auto',
+      },
+      schema: [
+        { name: 'modelValue', label: '评分值', type: 'number', default: 0 },
+        { name: 'max', label: '最大分值', type: 'number', default: 5 },
+        { name: 'disabled', label: '禁用状态', type: 'boolean', default: false },
+        { name: 'allowHalf', label: '允许半选', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '0' },
+      ],
+    },
+    {
+      type: 'el-row',
+      label: '行布局',
+      icon: 'row',
+      category: '布局组件',
+      defaultProps: {},
+      defaultStyles: {
+        width: '100%',
+        marginBottom: '16px',
+      },
+      schema: [
+        { name: 'gutter', label: '间距', type: 'number', default: 0 },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+        { name: 'marginBottom', label: '底部间距', type: 'string', default: '16px' },
+        { name: 'display', label: '显示方式', type: 'select', default: 'flex', options: [
+          { label: '弹性', value: 'flex' },
+          { label: '块级', value: 'block' },
+        ]},
+      ],
+      isContainer: true,
+    },
+    {
+      type: 'el-col',
+      label: '列布局',
+      icon: 'col',
+      category: '布局组件',
+      defaultProps: {
+        span: 24,
+      },
+      defaultStyles: {
+        width: 'auto',
+      },
+      schema: [
+        { name: 'span', label: '占据列数', type: 'number', default: 24 },
+        { name: 'offset', label: '偏移列数', type: 'number', default: 0 },
+        { name: 'pull', label: '向左偏移', type: 'number', default: 0 },
+        { name: 'push', label: '向右偏移', type: 'number', default: 0 },
+      ],
+      styleSchema: [
+        { name: 'padding', label: '内边距', type: 'string', default: '0' },
+      ],
+      isContainer: true,
+    },
+    {
+      type: 'el-space',
+      label: '间距',
+      icon: 'space',
+      category: '布局组件',
+      defaultProps: {
+        direction: 'horizontal',
+        size: 'default',
+      },
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [
+        { name: 'direction', label: '方向', type: 'select', default: 'horizontal', options: [
+          { label: '水平', value: 'horizontal' },
+          { label: '垂直', value: 'vertical' },
+        ]},
+        { name: 'size', label: '间距大小', type: 'select', default: 'default', options: [
+          { label: '小', value: 'small' },
+          { label: '默认', value: 'default' },
+          { label: '大', value: 'large' },
+        ]},
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+      ],
+      isContainer: true,
+    },
+    {
+      type: 'el-text',
+      label: '文本',
+      icon: 'text',
+      category: '显示组件',
+      defaultProps: {
+        content: '文本内容',
+      },
+      defaultStyles: {
+        fontSize: '14px',
+        color: '#303133',
+      },
+      schema: [
+        { name: 'content', label: '文本内容', type: 'string', default: '文本内容' },
+        { name: 'type', label: '类型', type: 'select', default: '', options: [
+          { label: '默认', value: '' },
+          { label: '主要', value: 'primary' },
+          { label: '成功', value: 'success' },
+          { label: '警告', value: 'warning' },
+          { label: '危险', value: 'danger' },
+        ]},
+        { name: 'size', label: '尺寸', type: 'select', default: '', options: [
+          { label: '默认', value: '' },
+          { label: '小', value: 'small' },
+          { label: '大', value: 'large' },
+        ]},
+        { name: 'bold', label: '加粗', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'fontSize', label: '字体大小', type: 'string', default: '14px' },
+        { name: 'color', label: '文字颜色', type: 'color' },
+        { name: 'textAlign', label: '对齐方式', type: 'select', default: 'left', options: [
+          { label: '左对齐', value: 'left' },
+          { label: '居中', value: 'center' },
+          { label: '右对齐', value: 'right' },
+        ]},
+        { name: 'fontWeight', label: '字体粗细', type: 'string', default: 'normal' },
+      ],
+    },
+    {
+      type: 'el-divider',
+      label: '分割线',
+      icon: 'divider',
+      category: '显示组件',
+      defaultProps: {},
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [
+        { name: 'direction', label: '方向', type: 'select', default: 'horizontal', options: [
+          { label: '水平', value: 'horizontal' },
+          { label: '垂直', value: 'vertical' },
+        ]},
+        { name: 'contentPosition', label: '文字位置', type: 'select', default: 'center', options: [
+          { label: '居中', value: 'center' },
+          { label: '左侧', value: 'left' },
+          { label: '右侧', value: 'right' },
+        ]},
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '12px 0' },
+      ],
+    },
+    {
+      type: 'el-alert',
+      label: '警告提示',
+      icon: 'alert',
+      category: '显示组件',
+      defaultProps: {
+        title: '提示信息',
+        type: 'info',
+      },
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [
+        { name: 'title', label: '标题', type: 'string', default: '提示信息' },
+        { name: 'description', label: '描述', type: 'string', default: '' },
+        { name: 'type', label: '类型', type: 'select', default: 'info', options: [
+          { label: '信息', value: 'info' },
+          { label: '成功', value: 'success' },
+          { label: '警告', value: 'warning' },
+          { label: '危险', value: 'danger' },
+        ]},
+        { name: 'closable', label: '可关闭', type: 'boolean', default: true },
+        { name: 'showIcon', label: '显示图标', type: 'boolean', default: true },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+        { name: 'margin', label: '外边距', type: 'string', default: '12px 0' },
+      ],
+    },
+    {
+      type: 'el-tag',
+      label: '标签',
+      icon: 'tag',
+      category: '显示组件',
+      defaultProps: {
+        content: '标签',
+        type: 'info',
+      },
+      defaultStyles: {
+        marginRight: '8px',
+      },
+      schema: [
+        { name: 'content', label: '标签内容', type: 'string', default: '标签' },
+        { name: 'type', label: '类型', type: 'select', default: 'info', options: [
+          { label: '主要', value: 'primary' },
+          { label: '成功', value: 'success' },
+          { label: '警告', value: 'warning' },
+          { label: '危险', value: 'danger' },
+          { label: '信息', value: 'info' },
+        ]},
+        { name: 'closable', label: '可关闭', type: 'boolean', default: false },
+        { name: 'effect', label: '效果', type: 'select', default: 'light', options: [
+          { label: '浅色', value: 'light' },
+          { label: '深色', value: 'dark' },
+          { label: '纯色', value: 'plain' },
+        ]},
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '0 8px 0 0' },
+      ],
+    },
+    {
+      type: 'el-badge',
+      label: '徽标',
+      icon: 'badge',
+      category: '显示组件',
+      defaultProps: {
+        value: 0,
+      },
+      defaultStyles: {
+        marginRight: '8px',
+      },
+      schema: [
+        { name: 'value', label: '徽标值', type: 'number', default: 0 },
+        { name: 'max', label: '最大值', type: 'number', default: 99 },
+        { name: 'isDot', label: '圆点模式', type: 'boolean', default: false },
+        { name: 'hidden', label: '隐藏', type: 'boolean', default: false },
+        { name: 'type', label: '类型', type: 'select', default: 'danger', options: [
+          { label: '主要', value: 'primary' },
+          { label: '成功', value: 'success' },
+          { label: '警告', value: 'warning' },
+          { label: '危险', value: 'danger' },
+          { label: '信息', value: 'info' },
+        ]},
+      ],
+      styleSchema: [
+        { name: 'margin', label: '外边距', type: 'string', default: '0 8px 0 0' },
+      ],
+    },
+    {
+      type: 'el-tabs',
+      label: '标签页',
+      icon: 'tabs',
+      category: '导航组件',
+      defaultProps: {
+        modelValue: '',
+      },
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+      ],
+      isContainer: true,
+    },
+    {
+      type: 'el-steps',
+      label: '步骤条',
+      icon: 'steps',
+      category: '导航组件',
+      defaultProps: {
+        active: 0,
+      },
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [
+        { name: 'active', label: '当前步骤', type: 'number', default: 0 },
+        { name: 'direction', label: '方向', type: 'select', default: 'horizontal', options: [
+          { label: '水平', value: 'horizontal' },
+          { label: '垂直', value: 'vertical' },
+        ]},
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+      ],
+      isContainer: true,
+    },
+    {
+      type: 'el-table',
+      label: '表格',
+      icon: 'table',
+      category: '数据组件',
+      defaultProps: {},
+      defaultStyles: {
+        width: '100%',
+        height: '300px',
+      },
+      schema: [
+        { name: 'border', label: '边框', type: 'boolean', default: true },
+        { name: 'striped', label: '斑马纹', type: 'boolean', default: false },
+        { name: 'height', label: '高度', type: 'string', default: '300px' },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+        { name: 'height', label: '高度', type: 'string', default: '300px' },
+      ],
+      isContainer: true,
+    },
+    {
+      type: 'el-tree',
+      label: '树形组件',
+      icon: 'tree',
+      category: '数据组件',
+      defaultProps: {
+        data: [],
+        props: {
+          label: 'label',
+          children: 'children',
+        },
+      },
+      defaultStyles: {
+        width: '100%',
+        height: '300px',
+      },
+      schema: [
+        { name: 'defaultExpandAll', label: '默认展开', type: 'boolean', default: false },
+        { name: 'showCheckbox', label: '显示复选框', type: 'boolean', default: false },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+        { name: 'height', label: '高度', type: 'string', default: '300px' },
+      ],
+      isContainer: false,
+    },
+    {
+      type: 'el-pagination',
+      label: '分页',
+      icon: 'pagination',
+      category: '数据组件',
+      defaultProps: {
+        total: 100,
+        pageSize: 10,
+        currentPage: 1,
+      },
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [
+        { name: 'total', label: '总条数', type: 'number', default: 100 },
+        { name: 'pageSize', label: '每页条数', type: 'number', default: 10 },
+        { name: 'currentPage', label: '当前页', type: 'number', default: 1 },
+        { name: 'layout', label: '布局', type: 'string', default: 'total, sizes, prev, pager, next, jumper' },
+      ],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+        { name: 'justifyContent', label: '对齐方式', type: 'select', default: 'flex-end', options: [
+          { label: '左对齐', value: 'flex-start' },
+          { label: '居中', value: 'center' },
+          { label: '右对齐', value: 'flex-end' },
+        ]},
+      ],
+      isContainer: false,
+    },
+    {
+      type: 'el-breadcrumb',
+      label: '面包屑',
+      icon: 'breadcrumb',
+      category: '导航组件',
+      defaultProps: {},
+      defaultStyles: {
+        width: '100%',
+      },
+      schema: [],
+      styleSchema: [
+        { name: 'width', label: '宽度', type: 'string', default: '100%' },
+      ],
+      isContainer: true,
+    },
   ])
 
   // ========== Actions ==========
@@ -522,6 +1045,63 @@ export const useEditorStore = defineStore('editor', () => {
       parent.children[index + 1] = temp
       saveHistory()
     }
+  }
+
+  /**
+   * 克隆组件
+   * @param componentId 要克隆的组件ID
+   */
+  const cloneComponent = (componentId: string) => {
+    if (componentId === 'root') {
+      console.error('不能克隆根组件')
+      return
+    }
+
+    const component = findComponentById(componentId)
+    if (!component) {
+      console.error(`组件 ${componentId} 不存在`)
+      return
+    }
+
+    const parent = findParentComponentById(componentId)
+    if (!parent) {
+      console.error(`找不到组件 ${componentId} 的父组件`)
+      return
+    }
+
+    const cloned: ComponentData = JSON.parse(JSON.stringify(component))
+    cloned.id = generateId()
+    cloned.label = `${component.label} (克隆)`
+    
+    if (!parent.children) {
+      parent.children = []
+    }
+
+    const index = parent.children.findIndex(child => child.id === componentId)
+    parent.children.splice(index + 1, 0, cloned)
+
+    saveHistory()
+  }
+
+  /**
+   * 更新组件事件
+   * @param id 组件ID
+   * @param events 事件配置对象
+   */
+  const updateComponentEvents = (id: string, events: Record<string, string>) => {
+    const component = findComponentById(id)
+    if (!component) {
+      console.error(`组件 ${id} 不存在`)
+      return
+    }
+
+    if (!component.events) {
+      component.events = {}
+    }
+    
+    component.events = { ...component.events, ...events }
+
+    saveHistory()
   }
 
   /**
